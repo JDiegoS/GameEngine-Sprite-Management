@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/jdieg/Documents/UVG/A5S2/GameEngine/GameEngine-Sprite-Management/src/Game/game.cpp
+iostream
+-
+game.h
+/mnt/c/Users/jdieg/Documents/UVG/A5S2/GameEngine/GameEngine-Sprite-Management/src/Game/game.h
+stexture.cpp
+/mnt/c/Users/jdieg/Documents/UVG/A5S2/GameEngine/GameEngine-Sprite-Management/src/Game/stexture.cpp
+
+/mnt/c/Users/jdieg/Documents/UVG/A5S2/GameEngine/GameEngine-Sprite-Management/src/Game/game.h
+SDL2/SDL.h
+-
+SDL2/SDL_image.h
+-
+
+/mnt/c/Users/jdieg/Documents/UVG/A5S2/GameEngine/GameEngine-Sprite-Management/src/Game/stexture.cpp
+SDL2/SDL.h
+-
+SDL2/SDL_image.h
+-
+string
+-
+
