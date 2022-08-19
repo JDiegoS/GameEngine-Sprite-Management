@@ -2,11 +2,12 @@
 #include "game.h"
 #include "stexture.cpp"
 
-SDL_Rect ball;
-SDL_Rect paddle1;
-SDL_Rect paddle2;
+ SDL_Rect paddle1;
 int speed = 2;
 int player_speed = 50;
+STexture* tex;
+int shadow = 30;
+
 
 Game::Game ()
 {
@@ -23,7 +24,71 @@ Game::~Game ()
 {
     std::cout << "~Game" << std::endl;
 }
+Uint32 fragment(Uint32 currentColor, float dT)
+{
+    if (currentColor == 0){
+        return 0;
+    }
+    
+    if (currentColor != 16777215 && currentColor != 13456847){
+        Uint8 red = (currentColor >> 16) & 0xff;
+        Uint8 green = (currentColor >> 8) & 0xff;
+        Uint8 blue = currentColor  & 0xff;
+
+        if (red > shadow){
+            red -= shadow;
+            
+        }
+        else{
+            red = 0;
+        }
+
+        if (green > shadow){
+            green -= shadow;
+            
+        }
+        else{
+            green = 0;
+        }
+
+        if (blue > shadow){
+            blue -= shadow;
+            
+        }
+        else{
+            blue = 0;
+        }
+
+
+        Uint32 rgb = red;
+        rgb = (rgb << 8) + green;
+        rgb = (rgb << 8) + blue;
+
+        return rgb;
+    }
+    else{
+        return 16777215;
+    }
+}
+Uint32 spriteBackground(Uint32 currentColor, float dT)
+{
+
+
+    if (currentColor == 13456847) {
+        return 16777215;
+    }
+    else{
+        return currentColor;
+    }
+}
 void Game::setup(){
+    tex = new STexture(renderer,window);
+    tex->load("./assets/bullet.png");
+
+    tex->executeShader(spriteBackground, dT);
+    tex->executeShaderPosition(fragment, dT, 200, 240);
+
+    
 
 }
 
@@ -52,13 +117,7 @@ void Game::frameEnd(){
 
 }
 
-Uint32 fragment(Uint32 currentColor, float dT)
-{
-    if (currentColor == 0) {
-        return currentColor;
-    }
-    return currentColor - 18;
-}
+
 
 void Game::init(const char* title, int widthi, int heighti){
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -90,28 +149,10 @@ void Game::update(){
 }
 void Game::render(){
 
-    SDL_SetRenderDrawColor(renderer, 50, 50, 100, 1);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 1);
     SDL_RenderClear(renderer);
-
-    STexture tex = STexture(renderer,window);
-    tex.load("./assets/bullet.png");
-    tex.executeShader(fragment, dT);
-    tex.render(100, 100, 300, 300);
-
-    SDL_SetRenderDrawColor(renderer, 200, 200, 255, 1);
-
-    /*
-    SDL_Surface* surface = IMG_Load("./assets/1.png");
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    SDL_FreeSurface(surface);
-
-    SDL_RenderCopy(renderer, texture, nullptr, &ball);
-
-    SDL_DestroyTexture(texture);
-    */
-
-    SDL_RenderFillRect(renderer, &paddle1);
+  
+    tex->render(200, 200, 300, 300);
 
     SDL_RenderPresent(renderer);
 

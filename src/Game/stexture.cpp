@@ -12,6 +12,7 @@ class STexture{
 
         
         void executeShader(Uint32(*func)(Uint32, float), float dT);
+        void executeShaderPosition(Uint32(*func)(Uint32, float), float dT, int x1, int x2);
         Uint32 color(Uint8 red, Uint8 green, Uint8 blue);
         
         int getWidth();
@@ -72,7 +73,24 @@ void STexture::executeShader(Uint32(*func)(Uint32, float), float dT)
     for( int i = 0; i < pixelCount; ++i)
     {
         pixels[i] = func(pixels[i], dT);
+    };
+    
+    unlockTexture();
+}
+
+void STexture::executeShaderPosition(Uint32(*func)(Uint32, float), float dT, int x1, int x2)
+{
+	lockTexture();
+    int pixelCount = getPixelCount();
+    Uint32* pixels = getPixels();
+    
+    for (int i = x1; i < x2; ++i){
+        for(int j = 0; j < tHeight; ++j){
+
+            pixels[(j * getPitch() / 4) + i] = func(pixels[(j * getPitch() / 4) + i], dT);
+        }
     }
+    
     
     unlockTexture();
 }
@@ -92,7 +110,6 @@ void STexture::load(std::string path){
         formattedSurface->pitch * formattedSurface->h
     );
 
-    //SDL_UnlockTexture(mTexture);
 
     tWidth = formattedSurface->w;
     tHeight = formattedSurface->h;
@@ -134,7 +151,7 @@ void STexture::render(int x, int y, int w, int h, SDL_Rect* clip, double angle, 
         renderQuad.h = clip->h;
     }
 
-    SDL_RenderCopyEx(renderer, mTexture, clip, &renderQuad, angle, center, flip);
+    SDL_RenderCopy(renderer, mTexture, NULL, &renderQuad);
 }
 
 int STexture::getWidth()
